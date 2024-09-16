@@ -1,4 +1,3 @@
-import { HeaderCardClasses } from "@/app/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,7 +19,6 @@ import {
 	SheetTitle,
 	SheetTrigger,
 } from "@/components/ui/sheet";
-import StatusRadioGroup from "@/components/ui/status-radio-group";
 import {
 	Table,
 	TableBody,
@@ -31,6 +29,7 @@ import {
 } from "@/components/ui/table";
 import { Plus, Search } from "lucide-react";
 import Link from "next/link";
+import { HeaderCardClasses } from "../../../lib/utils";
 
 export default function Page() {
 	return (
@@ -72,7 +71,6 @@ export default function Page() {
 								</div>
 								<div className="grid gap-2">
 									<Label htmlFor="status">Status</Label>
-									<StatusRadioGroup />
 								</div>
 							</div>
 							<SheetFooter>
