@@ -1,7 +1,3 @@
-import { Plus } from "lucide-react";
-import Link from "next/link";
-
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,6 +15,8 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
+import { Plus } from "lucide-react";
+import Link from "next/link";
 import { Input } from "../input";
 import { Label } from "../label";
 import {
@@ -232,10 +230,6 @@ export function Dashboard() {
 					</CardHeader>
 					<CardContent className="grid gap-8">
 						<div className="flex items-center gap-4">
-							<Avatar className="hidden h-9 w-9 sm:flex">
-								{/* <AvatarImage src="/avatars/01.png" alt="Avatar" /> */}
-								<AvatarFallback>OM</AvatarFallback>
-							</Avatar>
 							<div className="grid gap-1">
 								<p className="text-sm font-medium leading-none">
 									Olivia Martin
@@ -247,10 +241,6 @@ export function Dashboard() {
 							<div className="ml-auto font-medium">+$1,999.00</div>
 						</div>
 						<div className="flex items-center gap-4">
-							<Avatar className="hidden h-9 w-9 sm:flex">
-								{/* <AvatarImage src="/avatars/02.png" alt="Avatar" /> */}
-								<AvatarFallback>JL</AvatarFallback>
-							</Avatar>
 							<div className="grid gap-1">
 								<p className="text-sm font-medium leading-none">Jackson Lee</p>
 								<p className="text-sm text-muted-foreground">
@@ -260,10 +250,6 @@ export function Dashboard() {
 							<div className="ml-auto font-medium">+$39.00</div>
 						</div>
 						<div className="flex items-center gap-4">
-							<Avatar className="hidden h-9 w-9 sm:flex">
-								{/* <AvatarImage src="/avatars/03.png" alt="Avatar" /> */}
-								<AvatarFallback>IN</AvatarFallback>
-							</Avatar>
 							<div className="grid gap-1">
 								<p className="text-sm font-medium leading-none">
 									Isabella Nguyen
@@ -275,10 +261,6 @@ export function Dashboard() {
 							<div className="ml-auto font-medium">+$299.00</div>
 						</div>
 						<div className="flex items-center gap-4">
-							<Avatar className="hidden h-9 w-9 sm:flex">
-								{/* <AvatarImage src="/avatars/04.png" alt="Avatar" /> */}
-								<AvatarFallback>WK</AvatarFallback>
-							</Avatar>
 							<div className="grid gap-1">
 								<p className="text-sm font-medium leading-none">William Kim</p>
 								<p className="text-sm text-muted-foreground">will@email.com</p>
@@ -286,10 +268,6 @@ export function Dashboard() {
 							<div className="ml-auto font-medium">+$99.00</div>
 						</div>
 						<div className="flex items-center gap-4">
-							<Avatar className="hidden h-9 w-9 sm:flex">
-								{/* <AvatarImage src="/avatars/05.png" alt="Avatar" /> */}
-								<AvatarFallback>SD</AvatarFallback>
-							</Avatar>
 							<div className="grid gap-1">
 								<p className="text-sm font-medium leading-none">Sofia Davis</p>
 								<p className="text-sm text-muted-foreground">
