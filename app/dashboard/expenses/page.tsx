@@ -1,4 +1,3 @@
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
 	Card,
@@ -119,11 +118,7 @@ export default function Page() {
 								<TableCell className="hidden md:table-cell">
 									Alimentacao
 								</TableCell>
-								<TableCell className="hidden md:table-cell">
-									<Badge className="text-xs" variant="destructive">
-										pendente
-									</Badge>
-								</TableCell>
+								<TableCell className="hidden md:table-cell">pendente</TableCell>
 								<TableCell className="hidden md:table-cell">
 									2023-06-23
 								</TableCell>
