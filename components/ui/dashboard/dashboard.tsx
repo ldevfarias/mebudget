@@ -1,4 +1,3 @@
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
 	Card,
@@ -113,11 +112,7 @@ export function Dashboard() {
 										</div>
 									</TableCell>
 									<TableCell className="">Alimentacao</TableCell>
-									<TableCell className="">
-										<Badge className="text-xs bg-red-600 hover:bg-red-700 hover:text-white">
-											Pendente
-										</Badge>
-									</TableCell>
+									<TableCell className="">Pendente</TableCell>
 									<TableCell className="">2023-06-23</TableCell>
 									<TableCell className="text-right">$250.00</TableCell>
 								</TableRow>
@@ -129,11 +124,7 @@ export function Dashboard() {
 										</div>
 									</TableCell>
 									<TableCell className="">Alimentacao</TableCell>
-									<TableCell className="">
-										<Badge className="text-xs bg-green-600 hover:bg-green-700 hover:text-white">
-											Pagamento
-										</Badge>
-									</TableCell>
+									<TableCell className="">Pagamento</TableCell>
 									<TableCell className="">2023-06-23</TableCell>
 									<TableCell className="text-right">$250.00</TableCell>
 								</TableRow>
