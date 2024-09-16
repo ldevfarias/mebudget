@@ -4,7 +4,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "../card";
 export function CardCustom({
 	title,
 	value,
-	type,
 	icon,
 }: {
 	title: string;
