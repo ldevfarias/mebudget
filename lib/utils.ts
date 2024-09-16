@@ -1,7 +1,11 @@
+import type { ClassValue } from "clsx";
+import { clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+
 export const HeaderCardClasses = "grid grid-cols-2 gap-4 items-center";
 
-export function cn(...classes: string[]) {
-	return classes.filter(Boolean).join(" ");
+export function cn(...inputs: ClassValue[]) {
+	return twMerge(clsx(inputs));
 }
 
 export function getFirstTwoLetters(name: string) {
