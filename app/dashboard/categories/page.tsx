@@ -9,7 +9,6 @@ import {
 import CategoryForm from "@/components/ui/categories/form";
 import List from "@/components/ui/categories/list";
 import Search from "@/components/ui/search";
-import { HeaderCardClasses } from "@/lib/utils";
 
 export default async function Page({
 	searchParams,
@@ -20,7 +19,7 @@ export default async function Page({
 	return (
 		<div className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
 			<Card>
-				<CardHeader className={HeaderCardClasses}>
+				<CardHeader className="grid grid-cols-2 gap-4 items-center">
 					<div>
 						<CardTitle>Lista de categorias</CardTitle>
 						<CardDescription className="hidden md:inline">

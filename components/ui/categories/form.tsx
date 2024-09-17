@@ -66,7 +66,7 @@ export default function CategoryForm() {
 	};
 
 	return (
-		<Sheet open={open}>
+		<Sheet open={open} onOpenChange={setOpen}>
 			<SheetTrigger asChild>
 				<Button
 					asChild

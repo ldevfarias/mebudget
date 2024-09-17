@@ -93,3 +93,15 @@ export type Categories = {
 	created_at: string;
 	updated_at: string;
 };
+
+export type Expense = {
+	id?: string;
+	categoryId: string;
+	name: string;
+	description: string;
+	amount: number;
+	currentMonth: string;
+	dueDate: string;
+	createdAt: string;
+	updatedAt: string;
+};

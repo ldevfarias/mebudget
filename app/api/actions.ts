@@ -2,6 +2,7 @@
 import { sql } from "@vercel/postgres";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
+import type { Expense } from "./definitions";
 
 const categorySchema = z.object({
 	name: z
@@ -11,8 +12,6 @@ const categorySchema = z.object({
 });
 
 export async function createCategoryAction(form: { name: string }) {
-	// const name = .get("name")?.toString() || "";
-
 	const validation = categorySchema.safeParse(form);
 
 	if (!validation.success) {
@@ -37,4 +36,10 @@ export async function createCategoryAction(form: { name: string }) {
 			message: "Database Error: Failed to create category",
 		};
 	}
+}
+
+export async function createExpensesAction(form: Expense) {
+	return {
+		success: true,
+	};
 }
