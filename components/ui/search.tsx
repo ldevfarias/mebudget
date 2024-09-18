@@ -5,7 +5,9 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
 import { Input } from "./input";
 
-export default function Search() {
+export default function Search({
+	placeholder = "Pesquisar",
+}: { placeholder?: string }) {
 	const searchParams = useSearchParams();
 	const pathname = usePathname();
 	const { replace } = useRouter();
@@ -29,7 +31,7 @@ export default function Search() {
 					<SearchIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
 					<Input
 						type="search"
-						placeholder="Ex: Alimentação"
+						placeholder={placeholder}
 						className="pl-8"
 						onChange={(e) => handleFiltered(e.target.value)}
 						defaultValue={searchParams.get("query")?.toString()}

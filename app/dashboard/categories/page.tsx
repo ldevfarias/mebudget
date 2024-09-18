@@ -29,7 +29,7 @@ export default async function Page({
 					<CategoryForm />
 				</CardHeader>
 				<CardContent>
-					<Search />
+					<Search placeholder="Ex: Alimentação" />
 					<List categories={categories} />
 				</CardContent>
 			</Card>
