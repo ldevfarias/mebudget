@@ -9,25 +9,21 @@ import {
 } from "@/components/ui/card";
 import CardWrapper from "@/components/ui/dashboard/card-wrapper";
 import NewAction from "@/components/ui/newAction";
+import UserName from "@/components/ui/user";
 import { showCurrentMonth } from "@/lib/utils";
-import { getServerSession } from "next-auth";
-import { redirect } from "next/navigation";
 import TableExpenses from "../expenses/components/table/table";
 
 export default async function Page() {
 	const expenses = await fetchLatestExpenses();
-	const session = await getServerSession();
-
-	if (!session) {
-		redirect("/");
-	}
 
 	return (
-		<main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-0">
+		<main className="flex flex-1 flex-col gap-2 md:gap-4 md:p-0">
+			<UserName />
+
 			<div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
 				<CardWrapper />
 			</div>
-			<span>Usuario: {session?.user?.email}</span>
+
 			<div className="grid gap-4 md:gap-8 lg:grid-cols-2 xl:grid-cols-3">
 				<Card className="xl:col-span-2" x-chunk="dashboard-01-chunk-4">
 					<CardHeader className="flex flex-row items-center">

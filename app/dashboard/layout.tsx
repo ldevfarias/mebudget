@@ -8,7 +8,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 		<div className="flex min-h-screen w-full flex-col">
 			<Navbar />
 			<AppManageProvider>
-				<div className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
+				<div className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:pt-4 md:px-8 md:pb-8">
 					{children}
 
 					<SheetCustom />
