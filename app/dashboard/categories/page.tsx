@@ -17,22 +17,20 @@ export default async function Page({
 	const categories = await fetchFilteredCategories(query);
 
 	return (
-		<div className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
-			<Card>
-				<CardHeader className="grid grid-cols-2 gap-4 items-center">
-					<div>
-						<CardTitle>Lista de categorias</CardTitle>
-						<CardDescription className="hidden md:inline">
-							As últimas categorias cadastradas serão exibidas primeiro
-						</CardDescription>
-					</div>
-					<CategoryForm />
-				</CardHeader>
-				<CardContent>
-					<Search placeholder="Ex: Alimentação" />
-					<List categories={categories} />
-				</CardContent>
-			</Card>
-		</div>
+		<Card>
+			<CardHeader className="grid grid-cols-2 gap-4 items-center">
+				<div>
+					<CardTitle>Lista de categorias</CardTitle>
+					<CardDescription className="hidden md:inline">
+						As últimas categorias cadastradas serão exibidas primeiro
+					</CardDescription>
+				</div>
+				<CategoryForm />
+			</CardHeader>
+			<CardContent>
+				<Search placeholder="Ex: Alimentação" />
+				<List categories={categories} />
+			</CardContent>
+		</Card>
 	);
 }

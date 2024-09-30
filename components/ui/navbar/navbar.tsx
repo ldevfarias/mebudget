@@ -1,12 +1,18 @@
+"use client";
+
+import clsx from "clsx";
 import {
 	Calendar,
 	ChevronDown,
 	CircleUser,
 	Menu,
 	Package2,
+	Wallet,
 } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Button } from "../button";
+import ButtonLogout from "../button-logout";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -15,7 +21,15 @@ import {
 } from "../dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger } from "../sheet";
 
+const navItems = [
+	{ name: "Dashboard", href: "/dashboard" },
+	{ name: "Despesas", href: "/dashboard/expenses" },
+	{ name: "Categorias", href: "/dashboard/categories" },
+];
+
 export default function Navbar() {
+	const pathname = usePathname();
+
 	return (
 		<header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
 			<nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
@@ -23,27 +37,21 @@ export default function Navbar() {
 					href="#"
 					className="flex items-center gap-2 text-lg font-semibold md:text-base"
 				>
-					<Package2 className="h-6 w-6" />
+					<Wallet className="h-6 w-6" />
 					<span className="sr-only">MyBudget Icon</span>
 				</Link>
-				<Link
-					href="/dashboard/"
-					className="text-foreground transition-colors hover:text-foreground"
-				>
-					Dashboard
-				</Link>
-				<Link
-					href="/dashboard/expenses"
-					className="text-muted-foreground transition-colors hover:text-foreground"
-				>
-					Despesas
-				</Link>
-				<Link
-					href="/dashboard/categories"
-					className="text-muted-foreground transition-colors hover:text-foreground"
-				>
-					Categorias
-				</Link>
+				{navItems.map((item) => (
+					<Link
+						key={item.name}
+						href={item.href}
+						className={clsx(
+							"text-muted-foreground",
+							pathname === item.href && "text-black font-bold",
+						)}
+					>
+						{item.name}
+					</Link>
+				))}
 			</nav>
 			<Sheet>
 				<SheetTrigger asChild>
@@ -96,14 +104,6 @@ export default function Navbar() {
 							<DropdownMenuItem>Abril</DropdownMenuItem>
 						</DropdownMenuContent>
 					</DropdownMenu>
-					{/* <div className="relative">
-						<Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-						<Input
-							type="search"
-							placeholder="Search products..."
-							className="pl-8 sm:w-[300px] md:w-[200px] lg:w-[300px]"
-						/>
-					</div> */}
 				</form>
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
@@ -113,7 +113,9 @@ export default function Navbar() {
 						</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align="end">
-						<DropdownMenuItem>Sair</DropdownMenuItem>
+						<DropdownMenuItem>
+							<ButtonLogout />
+						</DropdownMenuItem>
 					</DropdownMenuContent>
 				</DropdownMenu>
 			</div>
