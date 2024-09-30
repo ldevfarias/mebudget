@@ -1,14 +1,7 @@
 "use client";
 
 import clsx from "clsx";
-import {
-	Calendar,
-	ChevronDown,
-	CircleUser,
-	Menu,
-	Package2,
-	Wallet,
-} from "lucide-react";
+import { Calendar, ChevronDown, Menu, Package2, Wallet } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "../button";
@@ -20,6 +13,7 @@ import {
 	DropdownMenuTrigger,
 } from "../dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger } from "../sheet";
+import CustomAvatar from "./custom-avatar";
 
 const navItems = [
 	{ name: "Dashboard", href: "/dashboard" },
@@ -108,7 +102,7 @@ export default function Navbar() {
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
 						<Button variant="secondary" size="icon" className="rounded-full">
-							<CircleUser className="h-5 w-5" />
+							<CustomAvatar />
 							<span className="sr-only">Toggle menu</span>
 						</Button>
 					</DropdownMenuTrigger>
