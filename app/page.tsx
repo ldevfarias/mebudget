@@ -23,11 +23,11 @@ export default function Page() {
 							</p>
 							<div>
 								<Link
-									href="/dashboard"
+									href="/signin"
 									className="inline-flex items-center rounded-md bg-white px-6 py-3 text-sm font-medium text-[#6366f1] shadow-md transition-colors hover:bg-[#f3f4f6] focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2"
 									prefetch={false}
 								>
-									Get Started
+									Acessar
 									<ArrowRightIcon className="ml-2 h-5 w-5" />
 								</Link>
 							</div>
