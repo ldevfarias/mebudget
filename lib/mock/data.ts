@@ -121,7 +121,7 @@ export const columns = [
 		className: "text-center",
 	},
 	{
-		title: "Ações",
-		className: "text-center",
+		title: "",
+		className: "",
 	},
 ];
