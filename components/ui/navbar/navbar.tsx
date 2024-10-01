@@ -1,11 +1,8 @@
 "use client";
 
-import clsx from "clsx";
-import { Calendar, ChevronDown, Menu, Package2, Wallet } from "lucide-react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { Calendar, ChevronDown, Menu } from "lucide-react";
+import dynamic from "next/dynamic";
 import { Button } from "../button";
-import ButtonLogout from "../button-logout";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -13,39 +10,16 @@ import {
 	DropdownMenuTrigger,
 } from "../dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger } from "../sheet";
-import CustomAvatar from "./custom-avatar";
+import NavItems from "./nav-items";
 
-const navItems = [
-	{ name: "Dashboard", href: "/dashboard" },
-	{ name: "Despesas", href: "/dashboard/expenses" },
-	{ name: "Categorias", href: "/dashboard/categories" },
-];
+const CustomAvatar = dynamic(() => import("./custom-avatar"), { ssr: false });
+const ButtonLogout = dynamic(() => import("../button-logout"), { ssr: false });
 
 export default function Navbar() {
-	const pathname = usePathname();
-
 	return (
 		<header className="sticky top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
 			<nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
-				<Link
-					href="#"
-					className="flex items-center gap-2 text-lg font-semibold md:text-base"
-				>
-					<Wallet className="h-6 w-6" />
-					<span className="sr-only">MyBudget Icon</span>
-				</Link>
-				{navItems.map((item) => (
-					<Link
-						key={item.name}
-						href={item.href}
-						className={clsx(
-							"text-muted-foreground",
-							pathname === item.href && "text-black font-bold",
-						)}
-					>
-						{item.name}
-					</Link>
-				))}
+				<NavItems />
 			</nav>
 			<Sheet>
 				<SheetTrigger asChild>
@@ -54,30 +28,9 @@ export default function Navbar() {
 						<span className="sr-only">Toggle menu</span>
 					</Button>
 				</SheetTrigger>
-				<SheetContent side="left">
-					<nav className="grid gap-6 text-lg font-medium">
-						<Link
-							href="#"
-							className="flex items-center gap-2 text-lg font-semibold"
-						>
-							<Package2 className="h-6 w-6" />
-							<span className="sr-only">Acme Inc</span>
-						</Link>
-						<Link href="#" className="hover:text-foreground">
-							Dashboard
-						</Link>
-						<Link
-							href="#"
-							className="text-muted-foreground hover:text-foreground"
-						>
-							Despesas
-						</Link>
-						<Link
-							href="#"
-							className="text-muted-foreground hover:text-foreground"
-						>
-							Categorias
-						</Link>
+				<SheetContent side="left" aria-describedby="sheet-menu">
+					<nav id="sheet-menu" className="grid gap-6 text-lg font-medium">
+						<NavItems />
 					</nav>
 				</SheetContent>
 			</Sheet>
