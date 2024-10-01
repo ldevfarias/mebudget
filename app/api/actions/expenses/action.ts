@@ -1,4 +1,5 @@
 "use server";
+import type { Expenses } from "@/lib/types/definitions";
 import { formatDate } from "@/lib/utils";
 import { sql } from "@vercel/postgres";
 import { revalidatePath } from "next/cache";
@@ -72,7 +73,7 @@ export async function createExpensesAction(
 export async function updateExpensesAction(
 	formData: z.infer<typeof expensesSchema>,
 	expenseId: string,
-	id?: string,
+	userId?: string,
 ) {
 	try {
 		// Validação dos dados com Zod
@@ -102,11 +103,61 @@ export async function updateExpensesAction(
 		// Executa a query no banco de dados
 		const result = await sql.query(query, values);
 
-		revalidatePath("/dashboard/expenses");
+		revalidatePath("/dashboard");
 		// Retorna a resposta com a nova despesa inserida
 		return {
 			success: true,
 			message: "Despesa editada com sucesso",
+			data: result.rows[0],
+		};
+	} catch (error) {
+		console.error("Erro ao editar despesa:", error);
+
+		return {
+			success: false,
+			message: "Erro ao editar despesa",
+			error:
+				error instanceof z.ZodError
+					? error.errors
+					: "Error: Failed to updated expense",
+		};
+	}
+}
+
+export async function updateFasterExpensesAction(
+	expense: Expenses,
+	userId?: string,
+) {
+	try {
+		// Construção da query SQL de inserção
+		const query = `
+			UPDATE expenses
+			SET users_id = $1, categories_id = $2, name = $3, description = $4, status = $5, value = $6, reference_date = $7, due_date = $8
+			WHERE id = $9
+			RETURNING *;
+		`;
+
+		// Definindo os valores para os placeholders da query
+		const values = [
+			1,
+			Number(expense.categories_id),
+			expense.name,
+			expense.description || null,
+			expense.status,
+			Number(expense.value).toFixed(2),
+			formatDate(new Date()),
+			expense.due_date,
+			expense.id,
+		];
+
+		// Executa a query no banco de dados
+		const result = await sql.query(query, values);
+
+		revalidatePath("/dashboard");
+		// Retorna a resposta com a nova despesa inserida
+		return {
+			success: true,
+			message: "Despesa marcada como paga com sucesso",
 			data: result.rows[0],
 		};
 	} catch (error) {
