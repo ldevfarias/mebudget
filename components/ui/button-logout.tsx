@@ -9,7 +9,7 @@ export default function ButtonLogout() {
 		<Button
 			variant="ghost"
 			className="w-full h-6 border-hidden bg-transparent text-black hover:bg-transparent hover:text-black"
-			onClick={() => signOut({ callbackUrl: "/" })}
+			onClick={() => signOut({ callbackUrl: "/signin" })}
 		>
 			<LogOut className="h-5 w-5 mr-2" />
 			<span className="text-base font-medium">Sair</span>
