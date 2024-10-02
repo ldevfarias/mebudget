@@ -26,8 +26,10 @@ export function CardCustom({
 }) {
 	const { setDialogOpen } = useAppManage();
 	const [eye, setEye] = useState(true);
+
+	const validValue = value == null ? "0,00" : value;
+
 	const handleToggle = () => {
-		console.log("chamando no card", value.length);
 		setEye(!eye);
 	};
 
@@ -43,7 +45,7 @@ export function CardCustom({
 							variant="outline"
 							size="sm"
 							className="h-9 w-9 p-0"
-							onClick={() => setDialogOpen(true, "newRevenue")}
+							onClick={() => setDialogOpen(true, "newRevenue", "revenue")}
 						>
 							<Plus className="h-4 w-4" />
 						</Button>
@@ -53,7 +55,11 @@ export function CardCustom({
 			<CardContent>
 				<div className="text-2xl font-bold grid grid-cols-3 gap-2">
 					<div className="col-span-2">
-						{eye ? <ShowValue value={value} /> : <HideValue value={value} />}
+						{eye ? (
+							<ShowValue value={validValue} />
+						) : (
+							<HideValue value={validValue} />
+						)}
 					</div>
 					<ToggleEye eyeOn={eye} handleToggle={handleToggle} />
 				</div>

@@ -68,3 +68,7 @@ export function showToast(message: string, type: "success" | "error") {
 		position: "top-right",
 	});
 }
+
+export function removeCharactersNonNumeric(value: string) {
+	return value.replace(/[^\d,.-]/g, "");
+}
