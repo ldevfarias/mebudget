@@ -64,10 +64,7 @@ export default function ExpensesForm() {
 	useEffect(() => {
 		if (typeSheet === "newExpense") {
 			reset();
-			console.log("ta caindo aqui por acidente");
 		} else if (typeSheet === "editExpense" && expense) {
-			console.log("Expense: ", String(expense.categories_id));
-
 			setValue("name", expense.name);
 			setValue("dueDate", formatDate(new Date(expense.due_date)));
 			setValue("value", parseBRLToNumber(expense.value));
