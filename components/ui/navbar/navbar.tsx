@@ -1,6 +1,6 @@
 "use client";
 
-import { Calendar, ChevronDown, Menu } from "lucide-react";
+import { Menu } from "lucide-react";
 import dynamic from "next/dynamic";
 import { Button } from "../button";
 import {
@@ -9,6 +9,7 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "../dropdown-menu";
+import Months from "../months";
 import { Sheet, SheetContent, SheetTrigger } from "../sheet";
 import NavItems from "./nav-items";
 
@@ -35,23 +36,7 @@ export default function Navbar() {
 				</SheetContent>
 			</Sheet>
 			<div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
-				<form className="ml-auto flex-1 sm:flex-initial">
-					<DropdownMenu>
-						<DropdownMenuTrigger asChild>
-							<Button variant="outline">
-								<Calendar className="h-5 w-5 mr-2" />
-								<span>Janeiro</span>
-								<ChevronDown className="h-4 w-4 ml-1 mt-1" />
-								<span className="sr-only">Toggle menu month</span>
-							</Button>
-						</DropdownMenuTrigger>
-						<DropdownMenuContent align="end">
-							<DropdownMenuItem>Fevereiro</DropdownMenuItem>
-							<DropdownMenuItem>Março</DropdownMenuItem>
-							<DropdownMenuItem>Abril</DropdownMenuItem>
-						</DropdownMenuContent>
-					</DropdownMenu>
-				</form>
+				<Months />
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
 						<Button variant="secondary" size="icon" className="rounded-full">

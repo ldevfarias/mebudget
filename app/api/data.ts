@@ -42,33 +42,61 @@ export async function fetchFilteredCategories(name?: string) {
 	}
 }
 
-export async function fetchExpenses(name?: string) {
+export async function fetchExpenses(
+	name: string,
+	referenceDate: string,
+	limit: number,
+) {
+	const limitPage = limit > 0 ? limit : null;
 	try {
-		let data: QueryResult<Expenses>;
-		const isValidName = name && isValidString(name);
+		const queryBase = `
+      WITH filtered_expenses AS (
+        SELECT expenses.*, categories.name AS category_name
+        FROM expenses
+        JOIN categories ON expenses.categories_id = categories.id
+        WHERE TO_CHAR(expenses.reference_date, 'MM-YYYY') = $1
+    `;
 
-		if (isValidName) {
-			data = await sql<Expenses>`
-				SELECT * FROM expenses WHERE name ILIKE ${`%${name}%`}
-			`;
-		} else {
-			data = await sql<Expenses>`SELECT expenses.*, categories.name AS category_name
-				FROM expenses
-				JOIN categories ON expenses.categories_id = categories.id
-				ORDER BY expenses.created_at DESC;`;
-		}
+		// Condicional para adicionar filtro por nome, se necessário
+		const queryWithName = name
+			? `${queryBase} AND expenses.name ILIKE $2 )`
+			: `${queryBase} )`;
 
-		return data.rows;
+		// Query completa com ordenação e paginação
+		const finalQuery = `
+      ${queryWithName}
+      SELECT *, (SELECT COUNT(*) FROM filtered_expenses) AS total_expenses
+      FROM filtered_expenses
+      ORDER BY created_at DESC
+      LIMIT $2;
+    `;
+
+		// Array de valores dinâmicos baseado na presença de "name"
+		const values = name
+			? [referenceDate, `%${name}%`, limitPage]
+			: [referenceDate, limitPage];
+
+		const data = await sql.query(finalQuery, values);
+
+		const expenses = data.rows;
+		const totalExpenses = expenses.length > 0 ? expenses[0].total_expenses : 0;
+
+		return {
+			expenses,
+			totalExpenses,
+		};
 	} catch (error) {
 		throw new Error(`Falha ao buscar despesas: ${error}`);
 	}
 }
 
-export async function fetchLatestExpenses() {
+export async function fetchLatestExpenses(referenceDate: string) {
 	try {
 		const data = await sql<Expenses>`
 			SELECT expenses.*, categories.name AS category_name FROM expenses JOIN categories ON
-			expenses.categories_id = categories.id ORDER BY expenses.created_at DESC LIMIT 5	
+			expenses.categories_id = categories.id
+			WHERE TO_CHAR(expenses.reference_date, 'MM-YYYY') = ${referenceDate}
+			ORDER BY expenses.created_at DESC LIMIT 5	
 		`;
 
 		return data.rows;
@@ -102,15 +130,15 @@ export async function fetchCategoryExpenseTotals() {
 		);
 	}
 }
-export async function fetchDashboardTotals() {
+export async function fetchDashboardTotals(referenceDate: string) {
 	try {
 		const totalExpenses =
-			await sql`SELECT SUM(value) AS total_value FROM expenses;`;
+			await sql`SELECT SUM(value) AS total_value FROM expenses WHERE TO_CHAR(reference_date, 'MM-YYYY') = ${referenceDate};`;
 		const totalPaidExpenses =
-			await sql`SELECT SUM(value) AS total_value_paid FROM expenses WHERE status = 'paid';`;
+			await sql`SELECT SUM(value) AS total_value_paid FROM expenses WHERE TO_CHAR(reference_date, 'MM-YYYY') = ${referenceDate} AND status = 'paid';`;
 
 		const totalRevenues = await sql`
-			SELECT SUM(value) AS total_value FROM revenues;
+			SELECT SUM(value) AS total_value FROM revenues WHERE TO_CHAR(reference_date, 'MM-YYYY') = ${referenceDate};
 		`;
 
 		const data = await Promise.all([
@@ -124,13 +152,18 @@ export async function fetchDashboardTotals() {
 		const totalValueRevenues = data[2].rows[0].total_value;
 		const totalValuePendingExpenses =
 			totalValueExpenses - totalValuePaidExpenses;
+		let totalSaldo = 0;
+
+		if (totalRevenues.rows[0].total_value !== null) {
+			totalSaldo = totalRevenues.rows[0].total_value - totalValuePaidExpenses;
+		}
 
 		return {
 			totalValueExpenses,
 			totalValuePaidExpenses,
 			totalValueRevenues,
 			totalValuePendingExpenses,
-			totalSaldo: totalValueRevenues - totalValuePaidExpenses,
+			totalSaldo,
 			totalFutureSaldo: totalValueRevenues - totalValuePendingExpenses,
 		};
 	} catch (error) {

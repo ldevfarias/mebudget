@@ -48,7 +48,7 @@ export type Expenses = {
 	description: string;
 	status: string;
 	value: string;
-	month: string;
+	reference_date: string;
 	due_date: string;
 	createdAt: string;
 	updatedAt: string;

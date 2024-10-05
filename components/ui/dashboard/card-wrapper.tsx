@@ -3,7 +3,10 @@ import { formatToBRL } from "@/lib/utils";
 import { Archive, Clock9, DollarSignIcon, HandCoins } from "lucide-react";
 import { CardCustom } from "./card-custom";
 
-export default async function CardWrapper() {
+type CardWrapperProps = {
+	referenceDate: string;
+};
+export default async function CardWrapper({ referenceDate }: CardWrapperProps) {
 	const {
 		totalValueExpenses,
 		totalValuePaidExpenses,
@@ -11,7 +14,7 @@ export default async function CardWrapper() {
 		totalValuePendingExpenses,
 		totalSaldo,
 		totalFutureSaldo,
-	} = await fetchDashboardTotals();
+	} = await fetchDashboardTotals(referenceDate);
 
 	return (
 		<>

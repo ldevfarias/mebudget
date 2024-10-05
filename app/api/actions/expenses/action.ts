@@ -126,6 +126,7 @@ export async function updateExpensesAction(
 
 export async function updateFasterExpensesAction(
 	expense: Expenses,
+	referenceDate: string,
 	userId?: string,
 ) {
 	try {
@@ -144,8 +145,8 @@ export async function updateFasterExpensesAction(
 			expense.name,
 			expense.description || null,
 			expense.status,
-			Number(expense.value).toFixed(2),
-			formatDate(new Date()),
+			Number(expense.value),
+			referenceDate,
 			expense.due_date,
 			expense.id,
 		];

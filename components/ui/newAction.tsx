@@ -1,5 +1,6 @@
 "use client";
 import { useAppManage } from "@/lib/context/AppManageContext";
+import clsx from "clsx";
 import { Plus } from "lucide-react";
 import { Button } from "./button";
 
@@ -25,7 +26,7 @@ export default function NewAction({
 	return (
 		<div className={classValue}>
 			<Button type="button" size="sm" onClick={handleAction}>
-				<Plus className="mr-2 h-4 w-4" />
+				<Plus className={clsx("h-4 w-4", !label ? "text-center" : "")} />
 				{label}
 			</Button>
 		</div>

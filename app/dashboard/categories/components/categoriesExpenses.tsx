@@ -6,6 +6,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
+import EmptyRecords from "@/components/ui/empty-records";
 import { formatToBRL, parseBRLToNumber } from "@/lib/utils";
 import Link from "next/link";
 
@@ -40,6 +41,10 @@ export async function CategoriesExpenses() {
 						</div>
 					</div>
 				))}
+
+				{!categoriesWithValue.length && (
+					<EmptyRecords message="Nenhuma soma de categorias encontrada, pois não há despesas cadastradas." />
+				)}
 			</CardContent>
 		</Card>
 	);

@@ -8,11 +8,12 @@ import {
 } from "@/components/ui/card";
 import CategoryForm from "@/components/ui/categories/form";
 import List from "@/components/ui/categories/list";
+import EmptyRecords from "@/components/ui/empty-records";
 import Search from "@/components/ui/search";
 
 export default async function Page({
 	searchParams,
-}: { searchParams?: { query?: string; page?: string } }) {
+}: { searchParams?: { query?: string; page?: string; month?: string } }) {
 	const query = searchParams?.query || "";
 	const categories = await fetchFilteredCategories(query);
 
@@ -29,7 +30,8 @@ export default async function Page({
 			</CardHeader>
 			<CardContent>
 				<Search placeholder="Ex: Alimentação" />
-				<List categories={categories} />
+				{categories?.length > 0 && <List categories={categories} />}
+				{!categories?.length && <EmptyRecords />}
 			</CardContent>
 		</Card>
 	);

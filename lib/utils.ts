@@ -14,6 +14,8 @@ export const expenseStatus = {
 
 export const HeaderCardClasses = "grid grid-cols-2 gap-4 items-center";
 
+export const getRandomNumber = () => Math.round(Math.random() * 1000);
+
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
 }
@@ -28,6 +30,13 @@ export function isValidString(value: string) {
 
 export function showCurrentMonth() {
 	return new Date().toLocaleDateString("pt-BR", { month: "long" });
+}
+
+export function getCurrentMonthYear() {
+	const month = String(new Date().getMonth() + 1).padStart(2, "0");
+	const year = String(new Date().getFullYear());
+
+	return `${month}-${year}`;
 }
 
 export function transformDateToBR(value: string) {

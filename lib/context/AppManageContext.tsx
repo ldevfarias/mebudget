@@ -1,6 +1,7 @@
 "use client";
 import React, { useContext, useState } from "react";
 import type { Categories, Expenses } from "../types/definitions";
+import { getCurrentMonthYear } from "../utils";
 
 type AppManageContextProps = {
 	id?: string;
@@ -23,6 +24,8 @@ type AppManageContextProps = {
 	setExpenses: (expense: Expenses) => void;
 	category?: Categories;
 	setCategoryItem: (category: Categories) => void;
+	referenceDate: string;
+	handleReferenceDate: (referenceDate: string) => void;
 };
 
 const AppManageContext = React.createContext<AppManageContextProps | undefined>(
@@ -41,6 +44,9 @@ export const AppManageProvider = ({
 	const [expense, setExpense] = useState<Expenses>();
 	const [scope, setScope] = useState("expense");
 	const [category, setCategory] = useState<Categories>();
+	const [referenceDate, setReferenceDate] = useState<string>(
+		getCurrentMonthYear(),
+	);
 
 	const setDialogOpen = (
 		open: boolean,
@@ -71,6 +77,9 @@ export const AppManageProvider = ({
 		setCategory(category);
 	};
 
+	const handleReferenceDate = (referenceDate: string) => {
+		setReferenceDate(referenceDate);
+	};
 	return (
 		<AppManageContext.Provider
 			value={{
@@ -89,6 +98,8 @@ export const AppManageProvider = ({
 				setExpenses,
 				category,
 				setCategoryItem,
+				referenceDate,
+				handleReferenceDate,
 			}}
 		>
 			{children}
