@@ -162,7 +162,7 @@ export default function ProductLanding() {
 								<ul className="mb-6 space-y-2">
 									<li className="flex items-center">
 										<CheckCircle className="h-5 w-5 text-green-500 mr-2" />
-										32" Display
+										Display
 									</li>
 									<li className="flex items-center">
 										<CheckCircle className="h-5 w-5 text-green-500 mr-2" />
@@ -181,7 +181,7 @@ export default function ProductLanding() {
 								<ul className="mb-6 space-y-2">
 									<li className="flex items-center">
 										<CheckCircle className="h-5 w-5 text-white mr-2" />
-										55" Display
+										Display
 									</li>
 									<li className="flex items-center">
 										<CheckCircle className="h-5 w-5 text-white mr-2" />
@@ -202,7 +202,7 @@ export default function ProductLanding() {
 								<ul className="mb-6 space-y-2">
 									<li className="flex items-center">
 										<CheckCircle className="h-5 w-5 text-green-500 mr-2" />
-										65" Display
+										Display
 									</li>
 									<li className="flex items-center">
 										<CheckCircle className="h-5 w-5 text-green-500 mr-2" />

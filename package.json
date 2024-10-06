@@ -7,7 +7,7 @@
     "start": "next start",
     "lint": "biome lint",
     "format": "biome format",
-    "build": "biome build"
+    "build": "next build"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",

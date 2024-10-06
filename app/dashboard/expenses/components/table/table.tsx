@@ -24,10 +24,7 @@ type TableExpensesProps = {
 	totalItems?: number;
 };
 
-export default function TableExpenses({
-	expenses,
-	totalItems,
-}: TableExpensesProps) {
+export default function TableExpenses({ expenses }: TableExpensesProps) {
 	const { setDialogOpen, setOpenSheet, setExpenses } = useAppManage();
 	const [isLoading, setIsLoading] = useState(false);
 
@@ -53,11 +50,7 @@ export default function TableExpenses({
 		const referenceDate = expense.reference_date;
 
 		try {
-			await updateFasterExpensesAction(
-				{ ...expense, status },
-				referenceDate,
-				expense.id,
-			);
+			await updateFasterExpensesAction({ ...expense, status }, referenceDate);
 			showToast(
 				`Despesa marcada como ${expenseStatus[status].label}`,
 				"success",

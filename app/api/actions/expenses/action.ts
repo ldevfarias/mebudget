@@ -73,7 +73,6 @@ export async function createExpensesAction(
 export async function updateExpensesAction(
 	formData: z.infer<typeof expensesSchema>,
 	expenseId: string,
-	userId?: string,
 ) {
 	try {
 		// Validação dos dados com Zod
@@ -127,7 +126,6 @@ export async function updateExpensesAction(
 export async function updateFasterExpensesAction(
 	expense: Expenses,
 	referenceDate: string,
-	userId?: string,
 ) {
 	try {
 		// Construção da query SQL de inserção
