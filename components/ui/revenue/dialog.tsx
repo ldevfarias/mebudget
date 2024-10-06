@@ -132,7 +132,10 @@ export function DialogRevenue() {
 	const { open, setDialogOpen, typeViewDialog } = useAppManage();
 
 	return (
-		<Dialog open={open} onOpenChange={() => setDialogOpen(false, "newRevenue")}>
+		<Dialog
+			open={open}
+			onOpenChange={() => setDialogOpen(false, "newRevenue", "revenue")}
+		>
 			{typeViewDialog === "newRevenue" ? <CreateRevenue /> : <RemoveDialog />}
 			{/* <DialogContent className="sm:max-w-md">
 				<DialogHeader>

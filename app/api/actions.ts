@@ -1,5 +1,6 @@
 "use server";
 import { formatDate } from "@/lib/utils";
+import type { QueryResultRow } from "@vercel/postgres";
 import { sql } from "@vercel/postgres";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
@@ -60,7 +61,7 @@ async function removeCategory(id: number) {
 		const result = await sql`DELETE FROM categories WHERE id = ${id}`;
 
 		return {
-			sucess: true,
+			success: true,
 			message: "Categoria removida com sucesso",
 			data: result.rows[0],
 		};
@@ -77,7 +78,7 @@ async function removeExpense(id: number) {
 		const result = await sql`DELETE FROM expenses WHERE id = ${id}`;
 
 		return {
-			sucess: true,
+			success: true,
 			message: "Despesa removida com sucesso",
 			data: result.rows[0],
 		};
@@ -89,7 +90,14 @@ async function removeExpense(id: number) {
 	}
 }
 
-const removeHandlers: Record<string, (id: number) => Promise<void>> = {
+const removeHandlers: Record<
+	string,
+	(id: number) => Promise<{
+		success: boolean;
+		message: string;
+		data?: QueryResultRow | undefined;
+	}>
+> = {
 	category: removeCategory,
 	expense: removeExpense,
 };

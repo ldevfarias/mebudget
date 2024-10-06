@@ -41,7 +41,6 @@ export default function CreateRevenue() {
 		formState: { errors, isValid, isSubmitting },
 		setValue,
 		reset,
-		watch,
 	} = useForm<RevenueFormData>({
 		mode: "onChange",
 		resolver: zodResolver(revenueSchema),
@@ -55,7 +54,7 @@ export default function CreateRevenue() {
 		} catch (error) {
 			showToast("Erro ao criar receita", "error");
 		} finally {
-			setDialogOpen(false, "newRevenue");
+			setDialogOpen(false, "newRevenue", "revenue");
 			reset();
 		}
 	};
@@ -89,7 +88,7 @@ export default function CreateRevenue() {
 				<div className="flex items-center space-x-2">
 					<div className="grid flex-1 gap-2 mb-4">
 						<CategorySelect
-							value={watch("categoryId")}
+							defaultValue=""
 							onChange={(value) => setValue("categoryId", value)}
 						/>
 					</div>
