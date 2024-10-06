@@ -92,7 +92,7 @@ export default function ExpensesForm() {
 				</div>
 				<div className="grid gap-2">
 					<CategorySelect
-						defaultValue={watch("categoryId" || "")}
+						defaultValue={watch("categoryId")}
 						onChange={(value) => setValue("categoryId", value)}
 					/>
 				</div>
