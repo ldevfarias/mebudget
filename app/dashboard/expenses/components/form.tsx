@@ -1,190 +1,171 @@
 "use client";
 
-import { createExpensesAction } from "@/app/api/actions";
+import {
+	createExpensesAction,
+	updateExpensesAction,
+} from "@/app/api/actions/expenses/action";
 import { Button } from "@/components/ui/button";
+import CategorySelect from "@/components/ui/categories/select";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import {
-	Sheet,
-	SheetClose,
-	SheetContent,
-	SheetDescription,
-	SheetFooter,
-	SheetHeader,
-	SheetTitle,
-	SheetTrigger,
-} from "@/components/ui/sheet";
+import { SheetFooter } from "@/components/ui/sheet";
+import { useAppManage } from "@/lib/context/AppManageContext";
+// biome-ignore lint/style/useImportType: <explanation>
+import { ExpenseFormData, expensesSchema } from "@/lib/schemas/expense";
+import { formatDate, parseBRLToNumber, showToast } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import clsx from "clsx";
-import { Loader2, Plus } from "lucide-react";
-import Link from "next/link";
-import { useState } from "react";
+import { Loader2 } from "lucide-react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import toast from "react-hot-toast";
-import { z } from "zod";
+import { NumericFormat } from "react-number-format";
 
-const expensesSchema = z.object({
-	name: z
-		.string()
-		.min(5, "O nome da despesa é obrigatório")
-		.max(100, "O nome não pode ter mais de 100 caracteres"),
-	description: z.string().optional(),
-	status: z.string().default("pending"),
-	value: z
-		.number()
-		.min(0, "O valor deve ser maior que 0")
-		.refine((v) => !Number.isNaN(v), { message: "Deve ser um número válido" }),
-	dueDate: z.string(),
-});
-type ExpenseFormData = z.infer<typeof expensesSchema>;
-
-export default function Form() {
-	const [open, setOpen] = useState(false);
+export default function ExpensesForm() {
+	const { setOpenSheet, typeSheet, expense } = useAppManage();
+	const title = typeSheet === "newExpense" ? "Adicionar" : "Atualizar";
 
 	const {
 		register,
 		handleSubmit,
 		formState: { errors, isValid, isSubmitting },
+		setValue,
+		watch,
 		reset,
 	} = useForm<ExpenseFormData>({
 		mode: "onChange",
 		resolver: zodResolver(expensesSchema),
+		defaultValues: {
+			categoryId:
+				typeSheet === "editExpense" && expense
+					? String(expense.categories_id)
+					: "",
+		},
 	});
 
-	const showToast = (message: string, type: "success" | "error") => {
-		toast[type](message, {
-			duration: 4000,
-			position: "top-right",
-		});
-	};
+	const onSubmit = async (data: ExpenseFormData) => {
+		console.log("data: ", data);
 
-	const onSubmit = async (form: ExpenseFormData) => {
-		console.log("Dados do formulário:", form);
+		const isNewExpense = typeSheet === "newExpense";
 		try {
-			const response = await createExpensesAction(form);
+			const response = isNewExpense
+				? await createExpensesAction(data)
+				: await updateExpensesAction(data, expense ? expense.id : "");
+
 			showToast(response.message, response.success ? "success" : "error");
 		} catch (error) {
 			showToast("Erro ao criar despesa", "error");
 		} finally {
-			setOpen(false);
+			setOpenSheet(false, typeSheet);
 			reset();
 		}
 	};
 
+	useEffect(() => {
+		if (typeSheet === "newExpense") {
+			reset();
+		} else if (typeSheet === "editExpense" && expense) {
+			setValue("name", expense.name);
+			setValue("dueDate", formatDate(new Date(expense.due_date)));
+			setValue("value", parseBRLToNumber(expense.value));
+			setValue("status", expense.status);
+		}
+	}, [reset, setValue, typeSheet, expense]);
+
 	return (
-		<Sheet open={open} onOpenChange={setOpen}>
-			<SheetTrigger asChild>
+		<form onSubmit={handleSubmit(onSubmit)}>
+			<div className="grid gap-4 py-4">
+				<div className="grid gap-2">
+					<Label htmlFor="name">Descrição</Label>
+					<Input
+						id="name"
+						type="text"
+						{...register("name")}
+						className={`mt-1 block w-full border ${
+							errors.name ? "border-red-500" : "border-gray-300"
+						} rounded-md shadow-sm focus:outline-none focus:ring focus:border-indigo-500`}
+						aria-invalid={!!errors.name}
+					/>
+					{errors.name && (
+						<p className="text-sm text-red-600">{errors.name.message}</p>
+					)}
+				</div>
+				<div className="grid gap-2">
+					<CategorySelect
+						defaultValue={watch("categoryId")}
+						onChange={(value) => setValue("categoryId", value)}
+					/>
+				</div>
+				<div className="grid gap-2">
+					<Label htmlFor="value">Valor</Label>
+					<NumericFormat
+						thousandSeparator="."
+						decimalSeparator=","
+						prefix="R$ "
+						onValueChange={(values) =>
+							setValue("value", values.floatValue || 0)
+						}
+						value={watch("value") || 0}
+						allowNegative={false}
+						decimalScale={2}
+						fixedDecimalScale
+						className="h-9 bg-transparent px-3 py-1 text-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:border-indigo-500"
+					/>
+					{errors.value && (
+						<p className="text-sm text-red-600">{errors.value.message}</p>
+					)}
+				</div>
+				<div className="grid gap-2">
+					<Label htmlFor="dueDate">Data de Vencimento</Label>
+					<Input
+						id="dueDate"
+						type="date"
+						{...register("dueDate")}
+						value={watch("dueDate") || ""}
+						onChange={(e) => setValue("dueDate", e.target.value)}
+					/>
+					{errors.dueDate && (
+						<p className="text-sm text-red-600">{errors.dueDate.message}</p>
+					)}
+				</div>
+				<div className="grid gap-2">
+					<Label htmlFor="status">Status</Label>
+					<RadioGroup
+						defaultValue="pending"
+						className="grid grid-cols-2"
+						value={watch("status")}
+						onValueChange={(value) => setValue("status", value)}
+					>
+						<div className="flex items-center space-x-2">
+							<RadioGroupItem
+								value="pending"
+								id="pending"
+								defaultChecked
+								{...register("status")}
+							/>
+							<Label htmlFor="pending">Pendente</Label>
+						</div>
+						<div className="flex items-center space-x-2">
+							<RadioGroupItem value="paid" id="paid" {...register("status")} />
+							<Label htmlFor="paid">Pago</Label>
+						</div>
+					</RadioGroup>
+				</div>
+			</div>
+			<SheetFooter>
 				<Button
-					asChild
-					size="sm"
-					className="ml-auto gap-1"
-					onClick={() => setOpen(true)}
+					type="submit"
+					className="w-full"
+					disabled={!isValid || isSubmitting}
 				>
-					<Link href="#">
-						<Plus className="h-4 w-4" />
-						Nova despesa
-					</Link>
+					<Loader2
+						className={clsx("mr-2 h-4 w-4 animate-spin", {
+							hidden: !isSubmitting,
+						})}
+					/>
+					{title}
 				</Button>
-			</SheetTrigger>
-			<SheetContent>
-				<SheetHeader>
-					<SheetTitle>Nova despesa</SheetTitle>
-					<SheetDescription>Adicione a despesa</SheetDescription>
-				</SheetHeader>
-				<form onSubmit={handleSubmit(onSubmit)}>
-					<div className="grid gap-4 py-4">
-						<div className="grid gap-2">
-							<Label htmlFor="name">Nome</Label>
-							<Input
-								id="name"
-								type="text"
-								{...register("name")}
-								className={`mt-1 block w-full border ${
-									errors.name ? "border-red-500" : "border-gray-300"
-								} rounded-md shadow-sm focus:outline-none focus:ring focus:border-indigo-500`}
-								aria-invalid={!!errors.name}
-							/>
-							{errors.name && (
-								<p className="text-sm text-red-600">{errors.name.message}</p>
-							)}
-						</div>
-						<div className="grid gap-2">
-							<Label htmlFor="name">Descricao</Label>
-							<Input
-								id="name"
-								type="text"
-								{...register("description")}
-								className={`mt-1 block w-full border ${
-									errors.description ? "border-red-500" : "border-gray-300"
-								} rounded-md shadow-sm focus:outline-none focus:ring focus:border-indigo-500`}
-								aria-invalid={!!errors.description}
-							/>
-							{errors.description && (
-								<p className="text-sm text-red-600">
-									{errors.description.message}
-								</p>
-							)}
-						</div>
-						<div className="grid gap-2">
-							<Label htmlFor="value">Valor</Label>
-							<Input
-								id="value"
-								type="number"
-								{...register("value", { valueAsNumber: true })}
-							/>
-							{errors.value && (
-								<p className="text-sm text-red-600">{errors.value.message}</p>
-							)}
-						</div>
-						<div className="grid gap-2">
-							<Label htmlFor="dueDate">Data de Vencimento</Label>
-							<Input id="dueDate" type="date" {...register("dueDate")} />
-							{errors.dueDate && (
-								<p className="text-sm text-red-600">{errors.dueDate.message}</p>
-							)}
-						</div>
-						<div className="grid gap-2">
-							<Label htmlFor="status">Status</Label>
-							<RadioGroup defaultValue="pending" className="grid grid-cols-2">
-								<div className="flex items-center space-x-2">
-									<RadioGroupItem
-										value="pending"
-										id="pending"
-										defaultChecked
-										{...register("status")}
-									/>
-									<Label htmlFor="pending">Pendente</Label>
-								</div>
-								<div className="flex items-center space-x-2">
-									<RadioGroupItem
-										value="paid"
-										id="paid"
-										{...register("status")}
-									/>
-									<Label htmlFor="paid">Pago</Label>
-								</div>
-							</RadioGroup>
-						</div>
-					</div>
-					<SheetFooter>
-						<SheetClose asChild>
-							<Button
-								type="submit"
-								className="w-full"
-								disabled={!isValid || isSubmitting}
-							>
-								<Loader2
-									className={clsx("mr-2 h-4 w-4 animate-spin", {
-										hidden: !isSubmitting,
-									})}
-								/>
-								Cadastrar
-							</Button>
-						</SheetClose>
-					</SheetFooter>
-				</form>
-			</SheetContent>
-		</Sheet>
+			</SheetFooter>
+		</form>
 	);
 }

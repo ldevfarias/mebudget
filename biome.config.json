@@ -1,0 +1,19 @@
+{
+  "$schema": "https://biomejs.org/schema.json",
+  "compiler": {
+    "options": {
+      "target": "esnext",
+      "module": "esnext",
+      "strict": true,
+      "noImplicitAny": true,
+      "jsx": "preserve"
+    }
+  },
+  "lint": {
+    "rules": {
+      "no-non-null-assertion": false,
+      "no-console": "warn",
+      "eqeqeq": "error"
+    }
+  }
+}

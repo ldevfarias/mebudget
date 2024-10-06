@@ -1,6 +1,6 @@
 "use client";
 
-import { createCategoryAction } from "@/app/api/actions";
+import { createCategoryAction } from "@/app/api/actions/categories/action";
 import { zodResolver } from "@hookform/resolvers/zod";
 import clsx from "clsx";
 import { Loader2, Plus } from "lucide-react";

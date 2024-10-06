@@ -1,102 +1,107 @@
 "use server";
+import { formatDate } from "@/lib/utils";
 import { sql } from "@vercel/postgres";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
-const categorySchema = z.object({
-	name: z
-		.string()
-		.min(5, "O nome da categoria é obrigatório")
-		.max(50, "O nome não pode ter mais de 50 caracteres"),
-});
-
-const expensesSchema = z.object({
-	name: z
-		.string()
-		.min(5, "O nome da despesa é obrigatório")
-		.max(100, "O nome não pode ter mais de 100 caracteres"),
-	description: z.string().optional(),
-	status: z.string(),
+const revenueSchema = z.object({
+	categoryId: z.string(),
+	name: z.string(),
 	value: z
 		.number()
-		.min(0, "O valor deve ser maior que 0")
-		.refine((v) => !Number.isNaN(v), { message: "Deve ser um número válido" }),
-	dueDate: z.string(),
+		.min(0.01, "O valor deve ser maior que 0")
+		.refine((val) => !Number.isNaN(val), {
+			message: "Deve ser um número válido",
+		}),
 });
 
-export async function createCategoryAction(form: { name: string }) {
-	const validation = categorySchema.safeParse(form);
-
-	if (!validation.success) {
-		throw new Error("Invalid data");
-	}
-
+export async function createRevenue(formData: z.infer<typeof revenueSchema>) {
 	try {
-		await sql`
-      INSERT INTO categories (name)
-      VALUES (${form.name})
-    `;
+		const validate = revenueSchema.parse(formData);
 
-		revalidatePath("/dashboard/categories");
+		const query = `
+			INSERT INTO revenues (users_id, categories_id, name, description,  value, reference_date)
+			VALUES ($1, $2, $3, $4, $5, $6)
+			RETURNING *;
+		`;
+
+		const values = [
+			1,
+			Number(validate.categoryId),
+			validate.name,
+			null,
+			Number(validate.value.toFixed(2)),
+			formatDate(new Date()),
+		];
+
+		const result = await sql.query(query, values);
+
+		revalidatePath("/dashboard");
 
 		return {
 			success: true,
-			message: `Categoria ${form.name} cadastrada.`,
+			message: "Receita criada com sucesso",
+			data: result.rows[0],
 		};
 	} catch (error) {
 		return {
 			success: false,
-			message: "Database Error: Failed to create category",
+			message: "Erro ao criar receita",
+			error:
+				error instanceof z.ZodError
+					? error.errors
+					: "Error: Failed to create revenue",
 		};
 	}
 }
 
-export async function createExpensesAction(
-	formData: z.infer<typeof expensesSchema>,
-) {
+async function removeCategory(id: number) {
 	try {
-		// Validação dos dados com Zod
-		const validatedData = expensesSchema.parse(formData);
+		const result = await sql`DELETE FROM categories WHERE id = ${id}`;
 
-		// Construção da query SQL de inserção
-		const query = `
-			INSERT INTO expenses (users_id, categories_id, name, description, status, value, month, due_date)
-			VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-			RETURNING *;
-		`;
-
-		// Definindo os valores para os placeholders da query
-		const values = [
-			"410544b2-4001-4271-9855-fec4b6a6442a",
-			"fc935609-d325-443c-a2e2-06afb9858f2d",
-			validatedData.name,
-			validatedData.description || null, // Descrição pode ser opcional
-			validatedData.status,
-			validatedData.value,
-			"september",
-			validatedData.dueDate,
-		];
-
-		// Executa a query no banco de dados
-		const result = await sql.query(query, values);
-
-		revalidatePath("/dashboard/expenses");
-		// Retorna a resposta com a nova despesa inserida
 		return {
-			success: true,
-			message: "Despesa criada com sucesso",
+			sucess: true,
+			message: "Categoria removida com sucesso",
 			data: result.rows[0],
 		};
 	} catch (error) {
-		console.error("Erro ao criar despesa:", error);
-
 		return {
 			success: false,
-			message: "Erro ao criar despesa",
-			error:
-				error instanceof z.ZodError
-					? error.errors
-					: "Error: Failed to create expense",
+			message: "Error: Failed to remove category",
 		};
 	}
+}
+
+async function removeExpense(id: number) {
+	try {
+		const result = await sql`DELETE FROM expenses WHERE id = ${id}`;
+
+		return {
+			sucess: true,
+			message: "Despesa removida com sucesso",
+			data: result.rows[0],
+		};
+	} catch (error) {
+		return {
+			success: false,
+			message: "Error: Failed to remove expense",
+		};
+	}
+}
+
+const removeHandlers: Record<string, (id: number) => Promise<void>> = {
+	category: removeCategory,
+	expense: removeExpense,
+};
+
+export async function genericRemove(type: string, id: number) {
+	const handler = removeHandlers[type];
+
+	if (!handler) {
+		throw new Error(`Tipo nao suportado: ${type}`);
+	}
+
+	revalidatePath("/dashboard");
+
+	return handler(id);
 }
